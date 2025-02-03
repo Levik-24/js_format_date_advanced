@@ -19,17 +19,13 @@ function formatDate(date, fromFormat, toFormat) {
   for (let i = 0; i < fromFormat.length - 1; i++) {
     switch (fromFormat[i]) {
       case 'YYYY':
-        formattedDateParts['YYYY'] = dateParts[i].substring(0, 4);
-
-        if (toFormat.includes('YY')) {
-          formattedDateParts['YY'] = dateParts[i].substring(2, 4);
-        }
+        formattedDateParts['YYYY'] = dateParts[i];
         break;
 
       case 'YY':
         let year = dateParts[i];
 
-        if (parseInt(year) < 30) {
+        if (parseInt(year, 10) < 30) {
           year = '20' + year;
         } else {
           year = '19' + year;
@@ -41,19 +37,22 @@ function formatDate(date, fromFormat, toFormat) {
       case 'MM':
         formattedDateParts['MM'] = dateParts[i];
         break;
+
       case 'DD':
         formattedDateParts['DD'] = dateParts[i];
         break;
     }
+
+    if (toFormat.includes('YY')) {
+      formattedDateParts['YY'] = dateParts[i].substring(2, 4);
+    }
   }
 
-  const newArray = [];
+  const reformattedDateParts = toFormat
+    .slice(0, -1)
+    .map((key) => formattedDateParts[key]);
 
-  for (let i = 0; i < toFormat.length - 1; i++) {
-    newArray.push(formattedDateParts[toFormat[i]]);
-  }
-
-  return newArray.join(toFormat[toFormat.length - 1]);
+  return reformattedDateParts.join(toFormat[toFormat.length - 1]);
 }
 
 module.exports = formatDate;
